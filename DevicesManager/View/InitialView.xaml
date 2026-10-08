@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DevicesManager.View.InitialView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:AlohaKit.Controls;assembly=AlohaKit"
+    xmlns:model="clr-namespace:DevicesManager.Model"
+    xmlns:mvvm="clr-namespace:DevicesManager.ViewModel"
+    Title="Dashboard de Armazenamento"
+    x:DataType="mvvm:InitialViewModel"
+    BackgroundColor="#F5F6F8">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="DeviceCardTemplate" x:DataType="model:DeviceInfoView">
+                <Border
+                    Margin="8"
+                    Padding="16"
+                    BackgroundColor="White"
+                    Stroke="#E0E0E0"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12">
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Offset="0,2" Radius="4" Opacity="0.05" />
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="15">
+
+                        <VerticalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="8">
+                                <Image HeightRequest="18" WidthRequest="18" Source="monitor.png" VerticalOptions="Center" />
+                                <Label FontSize="16" FontAttributes="Bold" Text="{Binding DeviceName}" TextColor="#212121" />
+                            </HorizontalStackLayout>
+
+                            <VerticalStackLayout Spacing="4" Margin="0,5,0,0">
+                                <HorizontalStackLayout Spacing="4">
+                                    <Label FontSize="13" Text="Total:" TextColor="#757575" />
+                                    <Label FontSize="13" FontAttributes="Bold" Text="{Binding TotalSize, StringFormat='{0} GB'}" TextColor="#424242" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="4">
+                                    <Label FontSize="13" Text="Livre:" TextColor="#757575" />
+                                    <Label FontSize="13" FontAttributes="Bold" Text="{Binding FreeSize, StringFormat='{0} GB'}" TextColor="#424242" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="4">
+                            <controls:ProgressRadial
+                                HeightRequest="85"
+                                WidthRequest="85"
+                                Minimum="0"
+                                Maximum="100"
+                                Value="{Binding PercentUsage}"
+                                Direction="LeftToRight"
+                                ProgressColor="{Binding AlertColor, TargetNullValue='#7B68EE', FallbackValue='#7B68EE'}"/>
+
+                            <Label FontSize="12" 
+                                   FontAttributes="Bold" 
+                                   HorizontalTextAlignment="Center" 
+                                   Text="{Binding PercentUsage, StringFormat='{0:0}% usado'}" 
+                                   TextColor="#616161" />       
+
+                            <!--<Label FontSize="12" 
+                                   FontAttributes="Bold" 
+                                   HorizontalTextAlignment="Center" 
+                                   Text="{Binding PercentUsage, StringFormat='{0}% usado'}" 
+                                   TextColor="#616161" />-->
+                        </VerticalStackLayout>
+
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *, Auto, *" RowSpacing="10" Padding="20">
+
+        <HorizontalStackLayout Grid.Row="0" Spacing="10" Margin="10,0,0,5">
+            <Image HeightRequest="24" Source="harddisk.png" VerticalOptions="Center"/>
+            <Label FontSize="20" FontAttributes="Bold" Text="Dispositivos na Rede" TextColor="#2C3E50" />
+        </HorizontalStackLayout>
+
+        <CollectionView
+            Grid.Row="1"
+            EmptyView="Não há dispositivos cadastrados."
+            ItemsSource="{Binding Devices}"
+            ItemTemplate="{StaticResource DeviceCardTemplate}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="3" />
+            </CollectionView.ItemsLayout>
+        </CollectionView>
+
+        <HorizontalStackLayout Grid.Row="2" Spacing="10" Margin="10,15,0,5">
+            <Image HeightRequest="24" Source="warning.png" VerticalOptions="Center"/>
+            <Label FontSize="20" FontAttributes="Bold" Text="Atenção Crítica" TextColor="#D32F2F" />
+        </HorizontalStackLayout>
+
+        <CollectionView
+            Grid.Row="3"
+            EmptyView="Nenhum alerta pendente."
+            ItemsSource="{Binding AlertDevices}"
+            ItemTemplate="{StaticResource DeviceCardTemplate}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="3" />
+            </CollectionView.ItemsLayout>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>
